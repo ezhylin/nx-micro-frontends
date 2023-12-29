@@ -3,19 +3,19 @@ name: Pull Request
 on: pull_request
 
 jobs:
-    lint-format:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v4
-          with:
-            fetch-depth: 0
+  lint-format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-        - uses: actions/setup-node@v4
-          with:
-            cache: npm
-            node-version: 20.10.0
-            run: npm ci
+      - uses: actions/setup-node@v4
+        with:
+          cache: npm
+          node-version: 20.10.0
+          run: npm ci
 
-        - name: check prettier format
-          run: |
-            nx format:check --base=${{ github.event.pull_request.base.sha }} --head=${{ github.event.pull_request.head.sha }}
+      - name: check prettier format
+        run: |
+          node_modules/.bin/nx format:check --base=${{ github.event.pull_request.base.sha }} --head=${{ github.event.pull_request.head.sha }}
