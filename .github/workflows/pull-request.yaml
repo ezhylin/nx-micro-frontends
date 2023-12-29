@@ -15,4 +15,4 @@ jobs:
           node-version: 20.10.0
       - run: npm ci
       - run: |
-          npx nx format:check --base=${{ github.event.pull_request.base.sha }} --head=${{ github.event.pull_request.head.sha }}
+          nx format:check --base=${{ github.event.pull_request.base.sha }} --head=${{ github.event.pull_request.head.sha }}
