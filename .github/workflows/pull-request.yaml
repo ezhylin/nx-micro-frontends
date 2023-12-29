@@ -3,16 +3,12 @@ name: Pull Request
 on: pull_request
 
 jobs:
-    lint:
+    lint-format:
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@v4
           with:
             fetch-depth: 0
-            
-        - name: Echo common ancestor
-          run: |
-              echo "GitHub event: ${{ toJSON(github.event) }}"
 
         - uses: actions/setup-node@v4
           with:
@@ -20,12 +16,6 @@ jobs:
             node-version: 20.10.0
             run: npm ci
 
-        - name: Derive BASE and HEAD SHAs
-          uses: nrwl/nx-set-shas@v4
-          id: setSHAs
-          with:
-            main-branch-name: main
-            run: |
-            echo "BASE: ${{ steps.setSHAs.outputs.base }}"
-            echo "HEAD: ${{ steps.setSHAs.outputs.head }}"
-        
+        - name: check prettier format
+          run: |
+            nx format:check --base=${{ github.event.pull_request.base.sha }} --head=${{ github.event.pull_request.head.sha }}
