@@ -12,11 +12,7 @@ jobs:
             
         - name: Echo common ancestor
           run: |
-            echo before: ${{ github.event.before  }}
-            echo head: ${{ github.event.head }}
-          # run: |
-          #   common_ancestor=$(git merge-base main ${{ github.event.before }})
-          #   echo "Common Ancestor SHA: $common_ancestor"
+            echo github event: ${{ toJson(github.event)  }}
 
         - uses: actions/setup-node@v4
           with:
