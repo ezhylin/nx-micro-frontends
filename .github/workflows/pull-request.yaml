@@ -12,7 +12,7 @@ jobs:
             
         - name: Echo common ancestor
           run: |
-            echo github event: ${{ toJson(github.event)  }}
+              echo "GitHub event: ${{ toJSON(github.event) }}"
 
         - uses: actions/setup-node@v4
           with:
