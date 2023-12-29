@@ -12,10 +12,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          cache: npm
           node-version: 20.10.0
-          run: npm ci
-
-      - name: check prettier format
-        run: |
+      - run: npm ci
+      - run: |
           npx nx format:check --base=${{ github.event.pull_request.base.sha }} --head=${{ github.event.pull_request.head.sha }}
