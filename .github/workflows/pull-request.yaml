@@ -11,10 +11,10 @@ jobs:
       - name: Cache dependencies
         uses: actions/cache@v3
         with:
-          path: ./.npm
+          path: ~/.npm
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
-        run: npm ci --cache .npm
+        run: npm ci --global
       - name: Lint code
         run: node_modules/.bin/nx format:check
   build:
@@ -26,9 +26,9 @@ jobs:
       - name: Cache dependencies
         uses: actions/cache@v3
         with:
-          path: ./.npm
+          path: ~/.npm
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
-        run: npm ci --cache .npm
+        run: npm ci --global
       - name: Build website
         run: node_modules/.bin/nx run shell:test
