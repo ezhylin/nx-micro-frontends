@@ -3,6 +3,13 @@ name: Pull Request
 on: pull_request
 
 jobs:
+  install-npm-deps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
   check-format:
     runs-on: ubuntu-latest
     steps:
