@@ -10,6 +10,9 @@ jobs:
         with:
           fetch-depth: 0 # calculate the number of commits head - base
 
+      - name: Set Cache Dir
+        run: npm config set cache ~/.npm
+        
       - name: Cache dependencies
         uses: actions/cache@v3
         with:
