@@ -1,74 +1,34 @@
-name: Pull Request
+name: Deploy website
 
 on: pull_request
 
 jobs:
-  install-npm-deps:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # calculate the number of commits head - base
-
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20.x'
-
-      - name: Set Cache Dir
-        run: npm config set cache ~/.npm
-
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
-
-      - name: Install dependencies
-        run: npm ci
-
-  check-format:
-    runs-on: ubuntu-latest
-    needs: [install-npm-deps]
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
+      - name: Get code
+        uses: actions/checkout@v3
       - name: Cache dependencies
         uses: actions/cache@v3
         with:
           path: ~/.npm
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
-
-      - name: Show cache dir
-        run: npm config get cache
-
-      - name: List before
-        run: ls -1 ~/.npm
-
       - name: Install dependencies
         run: npm ci
-
-      - name: List after
-        run: ls -1 ~/.npm
-
-      - name: format:check
-        run: |
-          node_modules/.bin/nx format:check --base=${{ github.event.pull_request.base.sha }} --head=${{ github.event.pull_request.head.sha }}
-
-  # unit-test:
-  #   needs: [install-npm-deps]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/cache@v3
-  #       id: npm-cache
-  #       with:
-  #         path: ~/.npm
-  #         key: ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-build-
-  #           ${{ runner.os }}-
-  #     - run: npm ci --cache ~/.npm
-  #     - run: |
-  #         node_modules/.bin/nx run shell:test
+      - name: Lint code
+        run: node_modules/.bin/nx format:check
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        run: npm ci
+      - name: Build website
+        run: node_modules/.bin/nx run shell:test
