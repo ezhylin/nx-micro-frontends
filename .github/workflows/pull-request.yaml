@@ -40,18 +40,18 @@ jobs:
         with:
           path: ~/.npm
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
-      
+
       - name: Show cache dir
         run: npm config get cache
 
       - name: List before
-        run: ls -l ~/.npm
+        run: ls -1 ~/.npm
 
       - name: Install dependencies
         run: npm ci
 
       - name: List after
-        run: ls -l ~/.npm
+        run: ls -1 ~/.npm
 
       - name: format:check
         run: |
