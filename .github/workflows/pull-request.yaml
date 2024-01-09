@@ -58,4 +58,3 @@ jobs:
       - run: npm ci
       - run: |
           node_modules/.bin/nx run shell:test
-      
