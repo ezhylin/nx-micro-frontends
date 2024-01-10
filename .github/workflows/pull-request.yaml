@@ -1,34 +1,61 @@
-name: Deploy website
+name: Pull Request
 
 on: pull_request
 
 jobs:
+  install-deps:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install dependencies
+        run: npm ci
+
+  check-format:
+    needs: install-deps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check format
+        run: node_modules/.bin/nx format:check --base=${{ github.event.pull_request.base.sha }} --head=${{ github.event.pull_request.head.sha }}
+
+
   test:
+    needs: install-deps
     runs-on: ubuntu-latest
     steps:
-      - name: Get code
+      - name: Checkout
         uses: actions/checkout@v3
+
       - name: Cache dependencies
         uses: actions/cache@v3
         with:
           path: ~/.npm
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Reset npm cache
+        run: npm cache clean --force
+      
       - name: Install dependencies
-        run: npm ci --global
-      - name: Lint code
-        run: node_modules/.bin/nx format:check
-  build:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get code
-        uses: actions/checkout@v3
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
-      - name: Install dependencies
-        run: npm ci --global
-      - name: Build website
+        run: npm ci
+
+      - name: Run tests
         run: node_modules/.bin/nx run shell:test
