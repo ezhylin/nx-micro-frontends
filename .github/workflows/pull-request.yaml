@@ -31,12 +31,20 @@ jobs:
           path: ~/.npm
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
 
+      - name: Verify cache
+        run: npm cache verify
+
+      - name: Reset npm cache
+        run: npm cache clean --force
+
+      - name: Verify cache
+        run: npm cache verify
+
       - name: Install dependencies
         run: npm ci
 
       - name: Check format
         run: node_modules/.bin/nx format:check --base=${{ github.event.pull_request.base.sha }} --head=${{ github.event.pull_request.head.sha }}
-
 
   test:
     needs: install-deps
@@ -51,9 +59,6 @@ jobs:
           path: ~/.npm
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Reset npm cache
-        run: npm cache clean --force
-      
       - name: Install dependencies
         run: npm ci
 
