@@ -4,13 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       message:
-        required: true  
-        description: 'Enter a message to be printed' 
+        required: true
+        description: 'Enter a message to be printed'
 
 jobs:
   print-input-message:
     runs-on: ubuntu-latest
-    steps: 
+    steps:
       - name: Echo input message
         run: echo "You've entered ${{ github.event.inputs.message }}"
-
