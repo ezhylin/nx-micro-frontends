@@ -1,0 +1,15 @@
+name: Install node modules
+description: Install node modules and cache them
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/cache@v3
+      id: cache-node-modules
+      with:
+        path: node_modules
+        key: ${{ hashFiles('**/package-lock.json') }}
+
+    - name: Install node modules
+      if: steps.cache-node-modules.outputs.cache-hit != 'true'
+      shell: bash
+      run: npm ci
